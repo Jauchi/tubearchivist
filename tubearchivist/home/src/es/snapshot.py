@@ -107,9 +107,15 @@ class ElasticSnapshot:
             print(f"snapshot: policy setup correctly: {response}")
 
     def _build_policy_data(self):
-        """build policy dict from config"""
-        at_12 = datetime.now().replace(hour=12, minute=0, second=0)
-        hour = at_12.astimezone(ZoneInfo("UTC")).hour
+        """build policy dict from config + environment variables"""
+        configured_timestamp = datetime.now().replace(
+            hour=EnvironmentSettings.ES_AUTO_SNAPSHOT_HOUR,
+            minute=EnvironmentSettings.ES_AUTO_SNAPSHOT_MINUTE,
+        )
+
+        hour = configured_timestamp.astimezone(ZoneInfo("UTC")).hour
+
+        expiry_time = EnvironmentSettings.ES_AUTO_SNAPSHOT_EXPIRY_TIME
 
         return {
             "schedule": f"0 0 {hour} * * ?",
@@ -121,9 +127,9 @@ class ElasticSnapshot:
                 "include_global_state": True,
             },
             "retention": {
-                "expire_after": "30d",
+                "expire_after": expiry_time,
                 "min_count": 5,
-                "max_count": 50,
+                "max_count": EnvironmentSettings.ES_AUTO_SNAPSHOT_MAX_KEEP,
             },
         }
 

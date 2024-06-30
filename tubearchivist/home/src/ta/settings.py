@@ -43,6 +43,16 @@ class EnvironmentSettings:
         )
     )
     ES_DISABLE_VERIFY_SSL: bool = bool(environ.get("ES_DISABLE_VERIFY_SSL"))
+    ES_AUTO_SNAPSHOT_HOUR: int = int(environ.get("ES_AUTO_SNAPSHOT_HOUR", 12))
+    ES_AUTO_SNAPSHOT_MINUTE: int = int(
+        environ.get("ES_AUTO_SNAPSHOT_MINUTE", 0)
+    )
+    ES_AUTO_SNAPSHOT_EXPIRY_TIME: str = str(
+        environ.get("ES_AUTO_SNAPSHOT_NUMBER_TO_KEEP", "30d")
+    )
+    ES_AUTO_SNAPSHOT_MAX_KEEP: int = int(
+        environ.get("ES_AUTO_SNAPSHOT_MAX_KEEP", 50)
+    )
 
     def print_generic(self):
         """print generic env vars"""
